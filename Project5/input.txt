@@ -1,0 +1,13 @@
+# Tree 1
+v1 v2
+v1 v5
+v2 v3
+v2 v4
+
+# Tree 2
+w1 w2
+w1 w3
+w3 w4
+w3 w7
+w4 w5
+w4 w6 
