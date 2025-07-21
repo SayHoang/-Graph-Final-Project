@@ -2,176 +2,160 @@
 #include <vector>
 #include <fstream>
 #include <string>
-using namespace std;
+#include <algorithm>
 
-// Hàm đếm số phân hoạch của n với phần tử lớn nhất là k (p_max(n,k))
-int count_partitions_max_k(int n, int k) {
-    if (k > n) return 0;
-    if (k == n) return 1;
-    if (k == 0) return 0;
-    
-    // dp[i][j] = số phân hoạch của i với phần tử lớn nhất là j
-    vector<vector<int>> dp(n + 1, vector<int>(k + 1, 0));
-    
-    // Khởi tạo: phân hoạch của 0
-    dp[0][0] = 1;
-    
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= k && j <= i; j++) {
-            // Có thể sử dụng j làm phần tử lớn nhất
-            if (j <= i) {
-                // Thêm j vào phân hoạch của i-j với phần tử lớn nhất <= j
-                for (int prev = 0; prev <= j; prev++) {
+namespace core {
+    /**
+     * @brief Count the number of integer partitions of n with maximum part k (p_max(n, k))
+     * @param n The integer to partition
+     * @param k The maximum part allowed
+     * @return The number of partitions
+     */
+    int countPartitionsWithMaxPart(int n, int k) {
+        if (k > n) return 0;
+        if (k == n) return 1;
+        if (k == 0) return 0;
+        std::vector<std::vector<int>> dp(n + 1, std::vector<int>(k + 1, 0));
+        dp[0][0] = 1;
+        for (int i = 1; i <= n; ++i) {
+            for (int j = 1; j <= k && j <= i; ++j) {
+                for (int prev = 0; prev <= j; ++prev) {
                     if (i - j >= 0) {
                         dp[i][j] += dp[i - j][prev];
                     }
                 }
             }
         }
+        return dp[n][k];
     }
-    
-    return dp[n][k];
-}
-
-// Hàm đếm số phân hoạch của n thành đúng k phần (p_k(n)) - SỬA LỖI
-int count_partitions_k_parts(int n, int k) {
-    if (k > n) return 0;
-    if (k == 1) return 1;
-    if (k == n) return 1;
-    
-    // dp[i][j] = số phân hoạch của i thành đúng j phần
-    vector<vector<int>> dp(n + 1, vector<int>(k + 1, 0));
-    
-    // Khởi tạo các trường hợp cơ sở
-    dp[0][0] = 1;  // Có 1 cách phân hoạch 0 thành 0 phần (phân hoạch rỗng)
-    
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= k && j <= i; j++) {
-            // Công thức truy hồi đúng: p_k(n) = p_{k-1}(n-1) + p_k(n-k)
-            // dp[i][j] = dp[i-1][j-1] + dp[i-j][j]
-            
-            // Thêm 1 vào mỗi phần của phân hoạch i-1 thành j-1 phần
-            dp[i][j] += dp[i - 1][j - 1];
-            
-            // Thêm 1 vào mỗi phần của phân hoạch i-j thành j phần
-            if (i - j >= 0) {
-                dp[i][j] += dp[i - j][j];
+    /**
+     * @brief Count the number of integer partitions of n into exactly k parts (p_k(n))
+     * @param n The integer to partition
+     * @param k The number of parts
+     * @return The number of partitions
+     */
+    int countPartitionsWithKParts(int n, int k) {
+        if (k > n) return 0;
+        if (k == 1) return 1;
+        if (k == n) return 1;
+        std::vector<std::vector<int>> dp(n + 1, std::vector<int>(k + 1, 0));
+        dp[0][0] = 1;
+        for (int i = 1; i <= n; ++i) {
+            for (int j = 1; j <= k && j <= i; ++j) {
+                dp[i][j] += dp[i - 1][j - 1];
+                if (i - j >= 0) {
+                    dp[i][j] += dp[i - j][j];
+                }
             }
         }
+        return dp[n][k];
     }
-    
-    return dp[n][k];
-}
-
-// Hàm in tất cả phân hoạch của n với phần tử lớn nhất là k
-void print_partitions_max_k(int n, int k, vector<int>& current, int sum, int max_used) {
-    if (sum == n) {
-        if (max_used == k) {
-            cout << "  ";
-            for (int i = 0; i < current.size(); i++) {
-                cout << current[i];
-                if (i < current.size() - 1) cout << " + ";
-            }
-            cout << endl;
-        }
-        return;
-    }
-    
-    for (int i = 1; i <= k && sum + i <= n; i++) {
-        current.push_back(i);
-        print_partitions_max_k(n, k, current, sum + i, max(max_used, i));
-        current.pop_back();
-    }
-}
-
-// Hàm in tất cả phân hoạch của n thành đúng k phần
-void print_partitions_k_parts(int n, int k, vector<int>& current, int sum, int parts) {
-    if (parts == k) {
+    /**
+     * @brief Print all partitions of n with maximum part k
+     * @param n The integer to partition
+     * @param k The maximum part allowed
+     * @param current The current partition (for recursion)
+     * @param sum The current sum
+     * @param maxUsed The current maximum part used
+     */
+    void printPartitionsWithMaxPart(int n, int k, std::vector<int>& current, int sum, int maxUsed) {
         if (sum == n) {
-            cout << "  ";
-            for (int i = 0; i < current.size(); i++) {
-                cout << current[i];
-                if (i < current.size() - 1) cout << " + ";
+            if (maxUsed == k) {
+                std::cout << "  ";
+                for (std::size_t i = 0; i < current.size(); ++i) {
+                    std::cout << current[i];
+                    if (i < current.size() - 1) std::cout << " + ";
+                }
+                std::cout << std::endl;
             }
-            cout << endl;
+            return;
         }
-        return;
-    }
-    
-    int start = (current.empty()) ? 1 : current.back();
-    for (int i = start; i <= n - sum && parts + 1 <= k; i++) {
-        if (sum + i <= n) {
+        for (int i = 1; i <= k && sum + i <= n; ++i) {
             current.push_back(i);
-            print_partitions_k_parts(n, k, current, sum + i, parts + 1);
+            printPartitionsWithMaxPart(n, k, current, sum + i, std::max(maxUsed, i));
             current.pop_back();
         }
     }
-}
+    /**
+     * @brief Print all partitions of n into exactly k parts
+     * @param n The integer to partition
+     * @param k The number of parts
+     * @param current The current partition (for recursion)
+     * @param sum The current sum
+     * @param parts The current number of parts
+     */
+    void printPartitionsWithKParts(int n, int k, std::vector<int>& current, int sum, int parts) {
+        if (parts == k) {
+            if (sum == n) {
+                std::cout << "  ";
+                for (std::size_t i = 0; i < current.size(); ++i) {
+                    std::cout << current[i];
+                    if (i < current.size() - 1) std::cout << " + ";
+                }
+                std::cout << std::endl;
+            }
+            return;
+        }
+        int start = (current.empty()) ? 1 : current.back();
+        for (int i = start; i <= n - sum && parts + 1 <= k; ++i) {
+            if (sum + i <= n) {
+                current.push_back(i);
+                printPartitionsWithKParts(n, k, current, sum + i, parts + 1);
+                current.pop_back();
+            }
+        }
+    }
+} // namespace core
 
-void process_test_case(int n, int k) {
-    cout << "\n=== TEST CASE: n = " << n << ", k = " << k << " ===" << endl;
-    
-    // Tính p_max(n,k)
-    int p_max_nk = count_partitions_max_k(n, k);
-    cout << "p_max(" << n << "," << k << ") = " << p_max_nk << endl;
-    
-    // Tính p_k(n)
-    int p_k_n = count_partitions_k_parts(n, k);
-    cout << "p_" << k << "(" << n << ") = " << p_k_n << endl;
-    
-    // So sánh kết quả
-    cout << "\n=== SO SANH ===" << endl;
-    if (p_max_nk == p_k_n) {
-        cout << "p_max(" << n << "," << k << ") = p_" << k << "(" << n << ")" << endl;
-        cout << "p_max(" << n << "," << k << ") = p_" << k << "(" << n << ") = " << p_max_nk << endl;
-    } else {
-        cout << "p_max(" << n << "," << k << ") != p_" << k << "(" << n << ")" << endl;
-        cout << "p_max(" << n << "," << k << ") = " << p_max_nk << endl;
-        cout << "p_" << k << "(" << n << ") = " << p_k_n << endl;
+namespace utils {
+    void processTestCase(int n, int k) {
+        std::cout << "\n=== TEST CASE: n = " << n << ", k = " << k << " ===" << std::endl;
+        int pMaxNk = core::countPartitionsWithMaxPart(n, k);
+        std::cout << "p_max(" << n << "," << k << ") = " << pMaxNk << std::endl;
+        int pKN = core::countPartitionsWithKParts(n, k);
+        std::cout << "p_" << k << "(" << n << ") = " << pKN << std::endl;
+        std::cout << "\n=== COMPARISON ===" << std::endl;
+        if (pMaxNk == pKN) {
+            std::cout << "p_max(" << n << "," << k << ") = p_" << k << "(" << n << ")" << std::endl;
+            std::cout << "p_max(" << n << "," << k << ") = p_" << k << "(" << n << ") = " << pMaxNk << std::endl;
+        } else {
+            std::cout << "p_max(" << n << "," << k << ") != p_" << k << "(" << n << ")" << std::endl;
+            std::cout << "p_max(" << n << "," << k << ") = " << pMaxNk << std::endl;
+            std::cout << "p_" << k << "(" << n << ") = " << pKN << std::endl;
+        }
+        if (n <= 10 && k <= 5) {
+            std::cout << "\n=== PARTITION DETAILS ===" << std::endl;
+            std::cout << "\nPartitions of " << n << " with maximum part " << k << ":" << std::endl;
+            std::vector<int> temp;
+            core::printPartitionsWithMaxPart(n, k, temp, 0, 0);
+            std::cout << "\nPartitions of " << n << " into exactly " << k << " parts:" << std::endl;
+            temp.clear();
+            core::printPartitionsWithKParts(n, k, temp, 0, 0);
+        }
+        std::cout << "\n" << std::string(50, '=') << std::endl;
     }
-    
-    // In chi tiết các phân hoạch (nếu n và k không quá lớn)
-    if (n <= 10 && k <= 5) {
-        cout << "\n=== CHI TIET CAC PHAN HOACH ===" << endl;
-        
-        cout << "\nCac phan hoach cua " << n << " voi phan tu lon nhat la " << k << ":" << endl;
-        vector<int> temp;
-        print_partitions_max_k(n, k, temp, 0, 0);
-        
-        cout << "\nCac phan hoach cua " << n << " thanh dung " << k << " phan:" << endl;
-        temp.clear();
-        print_partitions_k_parts(n, k, temp, 0, 0);
-    }
-    
-    cout << "\n" << string(50, '=') << endl;
-}
+} // namespace utils
 
 int main() {
-    cout << "=== BAI TOAN 2: DEM PHAN HOACH SO NGUYEN ===" << endl;
-    cout << "Doc input tu file 'input.txt'..." << endl;
-    
-    ifstream input_file("input.txt");
-    if (!input_file.is_open()) {
-        cout << "Loi: Khong the mo file input.txt!" << endl;
-        cout << "Hay nhap n va k thu cong: ";
+    std::cout << "=== PROBLEM 2: INTEGER PARTITION COUNTING ===" << std::endl;
+    std::cout << "Reading input from file 'input.txt'..." << std::endl;
+    std::ifstream inputFile("input.txt");
+    if (!inputFile.is_open()) {
+        std::cout << "Error: Cannot open input.txt!" << std::endl;
+        std::cout << "Please enter n and k manually: ";
         int n, k;
-        cin >> n >> k;
-        process_test_case(n, k);
+        std::cin >> n >> k;
+        utils::processTestCase(n, k);
         return 1;
     }
-    
     int n, k;
-    int test_count = 0;
-    
-    while (input_file >> n >> k) {
-        test_count++;
-        process_test_case(n, k);
+    int testCount = 0;
+    while (inputFile >> n >> k) {
+        ++testCount;
+        utils::processTestCase(n, k);
     }
-    
-    input_file.close();
-    
-    cout << "\n=== TONG KET ===" << endl;
-    cout << "Da xu ly " << test_count << " test case." << endl;
-    
+    inputFile.close();
+    std::cout << "\n=== SUMMARY ===" << std::endl;
+    std::cout << "Processed " << testCount << " test case(s)." << std::endl;
     return 0;
 } 
