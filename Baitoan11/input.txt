@@ -1,0 +1,6 @@
+  u: v x
+  v: y
+  w: y z
+  x: v
+  y: x
+  z: z
