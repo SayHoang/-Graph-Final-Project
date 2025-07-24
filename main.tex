@@ -1,0 +1,269 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[vietnamese]{babel}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{listings}
+
+% Cấu hình trang giấy và lề
+\geometry{
+    a4paper,
+    top=2.5cm,
+    bottom=2.5cm,
+    left=3.0cm,
+    right=3.0cm
+}
+
+% Tăng khoảng dòng cho dễ đọc
+\onehalfspacing
+
+% Định dạng header/footer
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Weekly Report - Midterm Test}
+\rhead{Hoàng Anh}
+\rfoot{Trang \thepage}
+
+% Định dạng tiêu đề section, subsection
+\titleformat{\section}
+  {\normalfont\Large\bfseries}{\thesection.}{1em}{}
+\titleformat{\subsection}
+  {\normalfont\large\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries}{\thesubsubsection}{1em}{}
+
+% Định dạng tiêu đề chính
+\title{\vspace{-1cm} \textbf{Weekly Report - Midterm Test}}
+\author{\textbf{Hoàng Anh}}
+
+\begin{document}
+\maketitle
+\vspace{-1cm}
+
+% --------------------------------------------------
+% Bài toán 1: Ferrers Diagram
+% --------------------------------------------------
+
+\section*{Bài toán 1: Ferrers Diagram}
+
+\subsection*{Mục đích}
+Chương trình này sinh ra tất cả các phân hoạch của một số nguyên $n$ thành $k$ phần, và với mỗi phân hoạch, vẽ biểu đồ Ferrers và biểu đồ Ferrers chuyển vị (transpose). Có hai phiên bản: một bằng C++ và một bằng Python.
+
+\subsection*{Giải thích thuật toán}
+
+\begin{itemize}
+  \item \textbf{Sinh phân hoạch:} Sử dụng đệ quy để sinh tất cả các phân hoạch của $n$ thành $k$ số nguyên dương, không tăng dần.
+  \item \textbf{Vẽ Ferrers diagram:} Với mỗi phân hoạch, in ra mỗi dòng số lượng dấu * tương ứng với từng phần tử, căn phải theo phần tử lớn nhất.
+  \item \textbf{Vẽ Ferrers transpose:} In ra ma trận chuyển vị của Ferrers diagram, tức là hoán đổi hàng và cột.
+\end{itemize}
+
+\subsection*{Phân tích chi tiết cách hoạt động của thuật toán}
+Thuật toán trong cả hai chương trình (C++ và Python) gồm hai phần chính: sinh phân hoạch số và vẽ biểu đồ Ferrers (cùng chuyển vị). Dưới đây là phân tích chi tiết:
+
+\begin{enumerate}
+  \item \textbf{Sinh phân hoạch số:}
+  \begin{itemize}
+    \item Ý tưởng là dùng đệ quy để liệt kê tất cả các cách phân tích số $n$ thành $k$ số nguyên dương, mỗi số không lớn hơn một giá trị cho trước (ban đầu là $n$).
+    \item Ở mỗi bước đệ quy, thuật toán chọn một số $i$ (từ $\min(n, \text{max\_val})$ đến $1$), thêm vào phân hoạch hiện tại, rồi tiếp tục phân tích $n-i$ thành $k-1$ phần với số lớn nhất là $i$.
+    \item Khi $k=0$ và $n=0$, một phân hoạch hợp lệ được tạo ra và sẽ được xử lý tiếp.
+  \end{itemize}
+  \item \textbf{Vẽ Ferrers diagram:}
+  \begin{itemize}
+    \item Với mỗi phân hoạch, biểu đồ Ferrers được vẽ bằng cách in ra mỗi dòng số lượng dấu * tương ứng với từng phần tử của phân hoạch, căn phải theo phần tử lớn nhất.
+    \item Ví dụ, phân hoạch $(3,1)$ sẽ vẽ:
+    \begin{verbatim}
+*** 3
+*   1
+    \end{verbatim}
+  \end{itemize}
+  \item \textbf{Vẽ Ferrers transpose:}
+  \begin{itemize}
+    \item Biểu đồ Ferrers chuyển vị (transpose) là hoán đổi hàng và cột của biểu đồ gốc.
+    \item Cách làm là duyệt từng cột (theo chiều cao lớn nhất của phân hoạch), với mỗi cột kiểm tra xem từng hàng có dấu * không (tức là phần tử phân hoạch lớn hơn chỉ số cột).
+    \item Ví dụ, transpose của $(3,1)$ là:
+    \begin{verbatim}
+* *
+*  
+*  
+3 1
+    \end{verbatim}
+  \end{itemize}
+\end{enumerate}
+
+\subsection*{Giải thích mã nguồn C++}
+\begin{itemize}
+  \item \texttt{maxp(const vector<int>\& p)}: Tìm phần tử lớn nhất trong phân hoạch $p$.
+  \item \texttt{Ferrers(const vector<int>\& p)}: In biểu đồ Ferrers cho phân hoạch $p$.
+  \item \texttt{FerrersTrans(const vector<int>\& p)}: In biểu đồ Ferrers chuyển vị cho phân hoạch $p$.
+  \item \texttt{genF(int n, int k, vector<int>\& cur, int max\_val)}: Đệ quy sinh các phân hoạch của $n$ thành $k$ phần, mỗi phần không lớn hơn $max\_val$.
+  \item \texttt{main()}: Đọc $n, k$ từ đầu vào, gọi hàm sinh phân hoạch và in kết quả.
+\end{itemize}
+
+\subsection*{Giải thích mã nguồn Python}
+\begin{itemize}
+  \item \texttt{max\_part(partition)}: Tìm phần tử lớn nhất trong phân hoạch.
+  \item \texttt{print\_ferrers(partition)}: In biểu đồ Ferrers.
+  \item \texttt{print\_ferrers\_transpose(partition)}: In biểu đồ Ferrers chuyển vị.
+  \item \texttt{generate\_partitions(n, k, current, max\_val)}: Đệ quy sinh phân hoạch.
+  \item \texttt{main()}: Đọc $n, k$ từ đầu vào, gọi hàm sinh phân hoạch và in kết quả.
+\end{itemize}
+
+\subsection*{Ví dụ đầu vào/đầu ra}
+\begin{verbatim}
+  Input:
+  4 2
+
+  Output:
+  F:
+  ** 2
+  ** 2
+  FT:
+  * *
+  * *
+  2 2
+  ====================
+  F:
+  *** 3
+  *   1
+  FT:
+  * *
+  *  
+  *  
+  3 1
+====================
+\end{verbatim}
+
+\subsection*{So sánh hai phiên bản}
+\begin{itemize}
+  \item Cả hai phiên bản đều sử dụng cùng một thuật toán sinh phân hoạch và in biểu đồ Ferrers.
+  \item Phiên bản C++ sử dụng \texttt{vector<int>} và thao tác nhập/xuất chuẩn của C++.
+  \item Phiên bản Python sử dụng list và cú pháp Pythonic, dễ đọc hơn.
+  \item Kết quả đầu ra của hai chương trình là tương đương.
+\end{itemize}
+
+% Mã nguồn chương trình
+
+\subsection*{Mã nguồn C++}
+\begin{lstlisting}[language=C++, basicstyle=\ttfamily\footnotesize, frame=single]
+#include <bits/stdc++.h>
+using namespace std;
+
+int maxp(const vector<int>&p) {
+    int pmax = 0;
+    int n = p.size();
+    for (int i = 0; i < n; ++i) {
+        if (p[i] > pmax)
+            pmax = p[i];
+    }
+    return pmax;
+}
+
+void Ferrers(const vector<int>&p) {
+    cout << "F:\n";
+    int pmax = maxp(p);
+    for (int r : p) {
+        for (int i = 0; i < r; ++i) cout << '*';
+        for (int i = 0; i < pmax - r; ++i) cout << " ";
+        cout << " " << r << '\n';
+    }
+}
+
+void FerrersTrans(const vector<int>& p) {
+    cout << "FT:\n";
+    int pmax = maxp(p);
+    int n = p.size();
+    for (int r = 0; r < pmax; ++r) {
+        for (int i = 0; i < n; ++i) {
+            if (p[i] > r) cout << "* ";
+            else cout << " ";
+        }
+        cout << '\n';
+    }
+    for (int i = 0; i < n; ++i) {
+        cout << p[i];
+        if (i != n - 1) cout << " ";
+    }
+    cout << "\n";
+}
+
+void genF(int n, int k, vector<int>&cur, int max_val) {
+    if (k == 0) {
+        if (n == 0) {
+            Ferrers(cur);
+            FerrersTrans(cur);
+            cout << "====================\n";
+        }
+        return;
+    }
+    for (int i = min(n, max_val); i >= 1; --i) {
+        cur.push_back(i);
+        genF(n - i, k - 1, cur, i);
+        cur.pop_back();
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(0);
+    cin.tie(0); cout.tie(0);
+    int n, k;
+    cin >> n >> k;
+    vector<int> current;
+    genF(n, k, current, n);
+    return 0;
+}
+\end{lstlisting}
+
+\subsection*{Mã nguồn Python}
+\begin{lstlisting}[language=Python, basicstyle=\ttfamily\footnotesize, frame=single]
+# ferreries_diagram.py
+
+def max_part(partition):
+    return max(partition) if partition else 0
+
+def print_ferrers(partition):
+    print("F:")
+    pmax = max_part(partition)
+    for r in partition:
+        print("*" * r + " " * (pmax - r) + f" {r}")
+
+def print_ferrers_transpose(partition):
+    print("FT:")
+    pmax = max_part(partition)
+    n = len(partition)
+    for r in range(pmax):
+        row = ''
+        for i in range(n):
+            row += "* " if partition[i] > r else "  "
+        print(row.rstrip())
+    print(' '.join(str(x) for x in partition))
+
+def generate_partitions(n, k, current, max_val):
+    if k == 0:
+        if n == 0:
+            print_ferrers(current)
+            print_ferrers_transpose(current)
+            print("====================")
+        return
+    for i in range(min(n, max_val), 0, -1):
+        current.append(i)
+        generate_partitions(n - i, k - 1, current, i)
+        current.pop()
+
+def main():
+    n, k = map(int, input().split())
+    generate_partitions(n, k, [], n)
+
+if __name__ == "__main__":
+    main() 
+\end{lstlisting}
+
+\end{document}

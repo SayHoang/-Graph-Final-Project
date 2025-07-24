@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include <fstream>
 using namespace std;
 
 int maxp(const vector<int>&p) {
@@ -57,10 +58,9 @@ void genF(int n, int k, vector<int>&cur, int max_val) {
 }
 
 int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0); cout.tie(0);
+    std::ifstream fin("Baitoan1/input.txt");
     int n, k;
-    cin >> n >> k;
+    fin >> n >> k;
     vector<int> current;
     genF(n, k, current, n);
     return 0;
