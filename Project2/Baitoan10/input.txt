@@ -1,0 +1,11 @@
+7 10 A undirected
+A B
+A C
+B D
+B E
+C F
+D E
+E F
+F G
+A B
+A A

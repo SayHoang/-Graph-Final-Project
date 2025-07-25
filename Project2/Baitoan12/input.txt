@@ -1,9 +1,8 @@
-5 9 A
+5 7
 A B
 A B
 A C
 B D
-B E
 C D
-C E
 D E
+A C
