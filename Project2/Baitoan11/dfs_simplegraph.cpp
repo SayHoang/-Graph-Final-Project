@@ -1,149 +1,372 @@
-// depth_first_search.cpp
-// Depth-First Search (DFS) for a simple graph
-// Reads input from 'input.txt' in the same directory.
-// Vertex labels are strings (e.g., 'u', 'v', ...).
+/**
+ * @file dfs_simplegraph.cpp
+ * @brief Depth-First Search implementation for Simple Graph
+ * @details Supports graphs with NO self-loops and NO parallel edges using adjacency list representation
+ */
 
-#include <iostream>
-#include <vector>
-#include <map>
-#include <string>
-#include <fstream>
-#include <algorithm>
-#include <limits>
+#include <bits/stdc++.h>
 
-enum class Color {
-    WHITE, GRAY, BLACK
-};
+using namespace std;
 
-struct Vertex {
-    std::string label;
-    Color color;
-    int discovery;
-    int finish;
-    std::string parent;
-    Vertex() : label(""), color(Color::WHITE), discovery(-1), finish(-1), parent("") {}
-    Vertex(const std::string& label_) : label(label_), color(Color::WHITE), discovery(-1), finish(-1), parent("") {}
-};
-
+/**
+ * @brief Represents a simple graph with DFS traversal capabilities
+ */
 class SimpleGraph {
+private:
+    vector<vector<int>> adjacencyList;
+    int numberOfVertices;
+    vector<bool> visitedVertices;
+    vector<int> traversalOrder;
+    set<pair<int, int>> existingEdges; // Track edges to prevent duplicates
+    
+    /**
+     * @brief Performs recursive DFS from given vertex
+     * @param currentVertex Starting vertex for DFS
+     */
+    void performRecursiveDFS(int currentVertex) {
+        visitedVertices[currentVertex] = true;
+        traversalOrder.push_back(currentVertex);
+        for (int neighbor : adjacencyList[currentVertex]) {
+            if (!visitedVertices[neighbor]) {
+                performRecursiveDFS(neighbor);
+            }
+        }
+    }
+    
+    /**
+     * @brief Resets visited status for all vertices
+     */
+    void resetVisitedStatus() {
+        fill(visitedVertices.begin(), visitedVertices.end(), false);
+        traversalOrder.clear();
+    }
+    
+    /**
+     * @brief Validates that vertices are within valid range
+     * @param vertex Vertex to validate
+     * @return True if vertex is valid
+     */
+    bool isValidVertex(int vertex) const {
+        return vertex >= 0 && vertex < numberOfVertices;
+    }
+    
+    /**
+     * @brief Checks if edge already exists in the simple graph
+     * @param sourceVertex Source vertex
+     * @param targetVertex Target vertex
+     * @return True if edge already exists
+     */
+    bool edgeExists(int sourceVertex, int targetVertex) const {
+        pair<int, int> edge = {min(sourceVertex, targetVertex), max(sourceVertex, targetVertex)};
+        return existingEdges.find(edge) != existingEdges.end();
+    }
+
 public:
-    std::map<std::string, std::vector<std::string>> adj; // label -> neighbors
-    std::map<std::string, Vertex> vertices; // label -> Vertex
-    int time;
-
-    SimpleGraph() : time(0) {}
-
-    void addEdge(const std::string& u, const std::string& v) {
-        if (adj.count(u) == 0) {
-            adj[u] = std::vector<std::string>();
-            vertices.emplace(u, Vertex(u));
-        }
-        if (adj.count(v) == 0) {
-            adj[v] = std::vector<std::string>();
-            vertices.emplace(v, Vertex(v));
-        }
-        adj[u].push_back(v);
-        // For undirected graph, also add adj[v].push_back(u);
-        // For directed graph, comment out the next line:
-        // adj[v].push_back(u);
+    /**
+     * @brief Constructs a simple graph with specified number of vertices
+     * @param vertexCount Number of vertices in the graph
+     */
+    explicit SimpleGraph(int vertexCount) : numberOfVertices(vertexCount) {
+        adjacencyList.resize(vertexCount);
+        visitedVertices.resize(vertexCount, false);
     }
-
-    void executeDepthFirstSearch() {
-        for (auto it = vertices.begin(); it != vertices.end(); ++it) {
-            it->second.color = Color::WHITE;
-            it->second.parent = "";
-            it->second.discovery = -1;
-            it->second.finish = -1;
+    
+    /**
+     * @brief Adds an edge to the simple graph with validation
+     * @param sourceVertex Source vertex of the edge
+     * @param targetVertex Target vertex of the edge
+     * @return True if edge was added successfully
+     */
+    bool addEdge(int sourceVertex, int targetVertex) {
+        if (!isValidVertex(sourceVertex) || !isValidVertex(targetVertex)) {
+            cerr << "Warning: Invalid vertex index (" << sourceVertex 
+                 << ", " << targetVertex << "). Vertices must be in range [0, " 
+                 << numberOfVertices - 1 << "]\n";
+            return false;
         }
-        time = 0;
-        // Visit all vertices in sorted order for deterministic output
-        std::vector<std::string> sorted_labels;
-        for (auto it = vertices.begin(); it != vertices.end(); ++it) {
-            sorted_labels.push_back(it->first);
+        
+        if (sourceVertex == targetVertex) {
+            cerr << "Warning: Self-loop detected (" << sourceVertex 
+                 << " -> " << targetVertex << "). Simple graphs do not support self-loops. Edge ignored.\n";
+            return false;
         }
-        std::sort(sorted_labels.begin(), sorted_labels.end());
-        for (const std::string& label : sorted_labels) {
-            if (vertices[label].color == Color::WHITE) {
-                dfsVisit(label);
+        
+        if (edgeExists(sourceVertex, targetVertex)) {
+            cerr << "Warning: Parallel edge detected (" << sourceVertex 
+                 << " <-> " << targetVertex << "). Simple graphs do not support parallel edges. Edge ignored.\n";
+            return false;
+        }
+        
+        // Add edge to adjacency list
+        adjacencyList[sourceVertex].push_back(targetVertex);
+        adjacencyList[targetVertex].push_back(sourceVertex);
+        
+        // Record edge in set to prevent duplicates
+        pair<int, int> edge = {min(sourceVertex, targetVertex), max(sourceVertex, targetVertex)};
+        existingEdges.insert(edge);
+        
+        return true;
+    }
+    
+    /**
+     * @brief Executes DFS traversal using recursive approach
+     * @param startVertex Starting vertex for traversal
+     * @return Vector containing vertices in DFS order
+     */
+    vector<int> executeRecursiveDFS(int startVertex) {
+        if (!isValidVertex(startVertex)) {
+            cerr << "Error: Invalid starting vertex " << startVertex << "\n";
+            return vector<int>();
+        }
+        resetVisitedStatus();
+        performRecursiveDFS(startVertex);
+        return traversalOrder;
+    }
+    
+    /**
+     * @brief Executes DFS traversal using iterative approach with stack
+     * @param startVertex Starting vertex for traversal
+     * @return Vector containing vertices in DFS order
+     */
+    vector<int> executeIterativeDFS(int startVertex) {
+        if (!isValidVertex(startVertex)) {
+            cerr << "Error: Invalid starting vertex " << startVertex << "\n";
+            return vector<int>();
+        }
+        
+        resetVisitedStatus();
+        stack<int> dfsStack;
+        dfsStack.push(startVertex);
+        
+        while (!dfsStack.empty()) {
+            int currentVertex = dfsStack.top();
+            dfsStack.pop();
+            if (!visitedVertices[currentVertex]) {
+                visitedVertices[currentVertex] = true;
+                traversalOrder.push_back(currentVertex);
+                for (int i = static_cast<int>(adjacencyList[currentVertex].size()) - 1; i >= 0; --i) {
+                    int neighbor = adjacencyList[currentVertex][i];
+                    if (!visitedVertices[neighbor]) {
+                        dfsStack.push(neighbor);
+                    }
+                }
             }
         }
+        return traversalOrder;
     }
-
-    void dfsVisit(const std::string& u_label) {
-        Vertex& u = vertices[u_label];
-        time++;
-        u.discovery = time;
-        u.color = Color::GRAY;
-        // Visit neighbors in sorted order for deterministic output
-        std::vector<std::string> neighbors = adj[u_label];
-        std::sort(neighbors.begin(), neighbors.end());
-        for (const std::string& v_label : neighbors) {
-            Vertex& v = vertices[v_label];
-            if (v.color == Color::WHITE) {
-                v.parent = u.label;
-                dfsVisit(v_label);
-            }
-        }
-        u.color = Color::BLACK;
-        time++;
-        u.finish = time;
+    
+    /**
+     * @brief Gets the number of vertices in the graph
+     * @return Number of vertices
+     */
+    int getVertexCount() const {
+        return numberOfVertices;
     }
-
-    void printDFSResult() const {
-        std::vector<std::string> sorted_labels;
-        for (auto it = vertices.begin(); it != vertices.end(); ++it) {
-            sorted_labels.push_back(it->first);
-        }
-        std::sort(sorted_labels.begin(), sorted_labels.end());
-        std::cout << "Vertex | d  | f  | Parent\n";
-        std::cout << "-------|----|----|--------\n";
-        for (const std::string& label : sorted_labels) {
-            const Vertex& v = vertices.at(label);
-            std::cout << label << "\t | " << v.discovery << " | " << v.finish << " | ";
-            if (v.parent.empty()) {
-                std::cout << "NIL";
-            } else {
-                std::cout << v.parent;
+    
+    /**
+     * @brief Gets the number of edges in the simple graph
+     * @return Number of edges
+     */
+    int getEdgeCount() const {
+        return static_cast<int>(existingEdges.size());
+    }
+    
+    /**
+     * @brief Displays the adjacency list representation
+     */
+    void displayGraph() const {
+        cout << "\nSimple Graph - Adjacency List Representation:\n";
+        cout << "No self-loops, no parallel edges\n";
+        
+        for (int vertex = 0; vertex < numberOfVertices; ++vertex) {
+            cout << "Vertex " << vertex << ": ";
+            if (!adjacencyList[vertex].empty()) {
+                for (size_t i = 0; i < adjacencyList[vertex].size(); ++i) {
+                    if (i > 0) cout << " -> ";
+                    cout << adjacencyList[vertex][i];
+                }
             }
-            std::cout << std::endl;
+            cout << "\n";
+        }
+        
+        cout << "Total vertices: " << numberOfVertices << "\n";
+        cout << "Total edges: " << getEdgeCount() << "\n";
+    }
+    
+    /**
+     * @brief Displays simple graph validation statistics
+     */
+    void displayGraphValidation() const {
+        cout << "\nSimple Graph Validation:\n";
+        cout << "* No self-loops allowed\n";
+        cout << "* No parallel edges allowed\n";
+        cout << "* Maximum possible edges: " << (numberOfVertices * (numberOfVertices - 1)) / 2 << "\n";
+        cout << "* Current edges: " << getEdgeCount() << "\n";
+        
+        if (getEdgeCount() == (numberOfVertices * (numberOfVertices - 1)) / 2) {
+            cout << "* This is a complete simple graph!\n";
         }
     }
 };
 
-SimpleGraph readSimpleGraphFromFile(const std::string& filename) {
-    std::ifstream fin(filename);
-    if (!fin) {
-        std::cerr << "Error: Cannot open " << filename << std::endl;
-        exit(1);
-    }
-    SimpleGraph g;
-    std::string line;
-    while (std::getline(fin, line)) {
-        if (line.empty() || line[0] == '#') continue;
-        size_t colon = line.find(':');
-        if (colon == std::string::npos) continue;
-        std::string u = line.substr(0, colon);
-        u.erase(std::remove_if(u.begin(), u.end(), ::isspace), u.end());
-        std::string rest = line.substr(colon + 1);
-        size_t pos = 0;
-        while (pos < rest.size()) {
-            while (pos < rest.size() && isspace(rest[pos])) ++pos;
-            size_t start = pos;
-            while (pos < rest.size() && !isspace(rest[pos]) && rest[pos] != ',') ++pos;
-            if (start < pos) {
-                std::string v = rest.substr(start, pos - start);
-                v.erase(std::remove_if(v.begin(), v.end(), ::isspace), v.end());
-                if (!v.empty()) g.addEdge(u, v);
+/**
+ * @brief Handles input operations for simple graph construction
+ */
+class SimpleGraphInputHandler {
+private:
+    istream& inputStream;
+    
+public:
+    /**
+     * @brief Constructs input handler with specified stream
+     * @param stream Input stream to read from
+     */
+    explicit SimpleGraphInputHandler(istream& stream) : inputStream(stream) {}
+    
+    /**
+     * @brief Reads graph data and constructs SimpleGraph
+     * @return Constructed SimpleGraph instance
+     */
+    unique_ptr<SimpleGraph> readGraphData() {
+        int vertexCount, edgeCount;
+        inputStream >> vertexCount >> edgeCount;
+        
+        auto graph = make_unique<SimpleGraph>(vertexCount);
+        int successfulEdges = 0;
+        
+        for (int edgeIndex = 0; edgeIndex < edgeCount; ++edgeIndex) {
+            int sourceVertex, targetVertex;
+            inputStream >> sourceVertex >> targetVertex;
+            if (graph->addEdge(sourceVertex, targetVertex)) {
+                successfulEdges++;
             }
-            while (pos < rest.size() && (isspace(rest[pos]) || rest[pos] == ',')) ++pos;
         }
+        
+        cout << "Successfully added " << successfulEdges 
+             << " out of " << edgeCount << " edges to simple graph.\n";
+        
+        return graph;
     }
-    return g;
-}
+    
+    /**
+     * @brief Reads starting vertex for DFS traversal
+     * @return Starting vertex index
+     */
+    int readStartingVertex() {
+        int startVertex;
+        inputStream >> startVertex;
+        return startVertex;
+    }
+};
 
+/**
+ * @brief Handles output operations for DFS results
+ */
+class SimpleGraphOutputHandler {
+private:
+    ostream& outputStream;
+    
+public:
+    /**
+     * @brief Constructs output handler with specified stream
+     * @param stream Output stream to write to
+     */
+    explicit SimpleGraphOutputHandler(ostream& stream) : outputStream(stream) {}
+    
+    /**
+     * @brief Displays DFS traversal results
+     * @param traversalResult Vector containing vertices in DFS order
+     * @param traversalType Description of traversal method
+     */
+    void displayTraversalResult(const vector<int>& traversalResult, const string& traversalType) {
+        if (traversalResult.empty()) {
+            outputStream << "DFS " << traversalType << ": No traversal performed (invalid input)\n";
+            return;
+        }
+        
+        outputStream << "DFS " << traversalType << ": ";
+        for (size_t i = 0; i < traversalResult.size(); ++i) {
+            if (i > 0) outputStream << " ";
+            outputStream << traversalResult[i];
+        }
+        outputStream << "\n";
+    }
+    
+    /**
+     * @brief Displays program header information
+     */
+    void displayProgramHeader() {
+        outputStream << "=== Depth-First Search for Simple Graph ===\n";
+        outputStream << "NO self-loops, NO parallel edges\n";
+    }
+};
+
+/**
+ * @brief Coordinates the Simple Graph DFS application workflow
+ */
+class SimpleGraphDFSApplication {
+private:
+    unique_ptr<SimpleGraph> graphInstance;
+    unique_ptr<SimpleGraphInputHandler> inputHandler;
+    unique_ptr<SimpleGraphOutputHandler> outputHandler;
+    
+public:
+    /**
+     * @brief Constructs DFS application with I/O streams
+     * @param input Input stream for reading data
+     * @param output Output stream for displaying results
+     */
+    SimpleGraphDFSApplication(istream& input, ostream& output) {
+        inputHandler = make_unique<SimpleGraphInputHandler>(input);
+        outputHandler = make_unique<SimpleGraphOutputHandler>(output);
+    }
+    
+    /**
+     * @brief Executes the complete Simple Graph DFS application workflow
+     */
+    void executeApplication() {
+        outputHandler->displayProgramHeader();
+        graphInstance = inputHandler->readGraphData();
+        int startingVertex = inputHandler->readStartingVertex();
+        performDFSAnalysis(startingVertex);
+    }
+
+private:
+    /**
+     * @brief Performs DFS analysis using both recursive and iterative methods
+     * @param startVertex Starting vertex for analysis
+     */
+    void performDFSAnalysis(int startVertex) {
+        graphInstance->displayGraph();
+        graphInstance->displayGraphValidation();
+        
+        vector<int> recursiveResult = graphInstance->executeRecursiveDFS(startVertex);
+        outputHandler->displayTraversalResult(recursiveResult, "using recursion");
+        
+        vector<int> iterativeResult = graphInstance->executeIterativeDFS(startVertex);
+        outputHandler->displayTraversalResult(iterativeResult, "using iteration");
+    }
+};
+
+/**
+ * @brief Main program entry point
+ * @return Program exit status
+ */
 int main() {
-    SimpleGraph g = readSimpleGraphFromFile("input.txt");
-    g.executeDepthFirstSearch();
-    g.printDFSResult();
+    try {
+        ifstream inputFile("input.txt");
+        if (!inputFile.is_open()) {
+            cerr << "Error: Cannot open input.txt file\n";
+            return 1;
+        }
+        
+        SimpleGraphDFSApplication application(inputFile, cout);
+        application.executeApplication();
+        
+        inputFile.close();
+    } catch (const exception& error) {
+        cerr << "Error occurred: " << error.what() << "\n";
+        return 1;
+    }
     return 0;
 } 

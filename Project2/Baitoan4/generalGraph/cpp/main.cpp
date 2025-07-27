@@ -6,38 +6,6 @@
 #include <fstream>
 #include <string>
 
-/**
- * @brief Create sample input file with general graph data
- * @param fileName Name of file to create
- */
-void createSampleInputFile(const std::string& fileName) {
-    std::ofstream outputFile(fileName);
-    if (!outputFile.is_open()) {
-        std::cerr << "Error: Cannot create sample file " << fileName << std::endl;
-        return;
-    }
-    
-    // // Sample general graph with self-loops and multiple edges
-    // outputFile << "5 15" << std::endl;
-    // outputFile << "0 0" << std::endl;  // self-loop
-    // outputFile << "0 1" << std::endl;
-    // outputFile << "0 1" << std::endl;  // multiple edge
-    // outputFile << "0 2" << std::endl;
-    // outputFile << "0 2" << std::endl;  // multiple edge
-    // outputFile << "0 2" << std::endl;  // multiple edge
-    // outputFile << "1 1" << std::endl;  // self-loop
-    // outputFile << "1 2" << std::endl;
-    // outputFile << "1 3" << std::endl;
-    // outputFile << "2 2" << std::endl;  // self-loop
-    // outputFile << "2 4" << std::endl;
-    // outputFile << "3 3" << std::endl;  // self-loop
-    // outputFile << "3 4" << std::endl;
-    // outputFile << "3 4" << std::endl;  // multiple edge
-    // outputFile << "4 4" << std::endl;  // self-loop
-    
-    outputFile.close();
-    std::cout << "Sample input file created: " << fileName << std::endl;
-}
 
 /**
  * @brief Demonstrate all 12 conversion functions between graph representations

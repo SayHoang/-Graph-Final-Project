@@ -1,286 +1,369 @@
-// dfs_multigraph.cpp
-// Depth-First Search (DFS) for a multigraph
-// Supports parallel edges and self-loops
-// Reads input from 'input.txt' in the same directory
+/**
+ * @file dfs_multigraph.cpp
+ * @brief Depth-First Search implementation for Multi Graph
+ * @details Supports graphs with parallel edges but NO self-loops using adjacency list representation
+ */
 
-#include <iostream>
-#include <vector>
-#include <map>
-#include <stack>
-#include <string>
-#include <fstream>
-#include <algorithm>
+#include <bits/stdc++.h>
+
+using namespace std;
 
 /**
- * @brief Color states for DFS traversal.
+ * @brief Represents a multi graph with DFS traversal capabilities
  */
-enum class Color {
-    WHITE, ///< Not discovered
-    GRAY,  ///< Discovered, in progress
-    BLACK  ///< Fully explored
-};
-
-/**
- * @brief Represents a vertex in the multigraph.
- */
-struct Vertex {
-    std::string label; ///< Vertex label
-    Color color; ///< Color state
-    int discoveryTime; ///< Discovery time
-    int finishTime; ///< Finish time
-    std::string parent; ///< Parent vertex label (empty if none)
-    
-    Vertex() : label(""), color(Color::WHITE), discoveryTime(-1), finishTime(-1), parent("") {}
-    
-    Vertex(const std::string& label_) 
-        : label(label_), color(Color::WHITE), discoveryTime(-1), finishTime(-1), parent("") {}
-};
-
-/**
- * @brief Represents a multigraph using adjacency list with parallel edges.
- */
-class Multigraph {
-public:
-    std::map<std::string, std::vector<std::string>> adjacencyList; ///< label -> neighbors (with duplicates)
-    std::map<std::string, Vertex> vertices; ///< label -> Vertex
-    int globalTime; ///< Global timer for discovery/finish times
-    
-    Multigraph() : globalTime(0) {}
-    
-    /**
-     * @brief Add a vertex to the graph.
-     * @param label Vertex label
-     */
-    void addVertex(const std::string& label) {
-        if (vertices.count(label) == 0) {
-            vertices.emplace(label, Vertex(label));
-            adjacencyList[label] = std::vector<std::string>();
-        }
-    }
-    
-    /**
-     * @brief Add an edge to the multigraph (allows parallel edges).
-     * @param u Source vertex label
-     * @param v Target vertex label
-     */
-    void addEdge(const std::string& u, const std::string& v) {
-        if (u == v) {
-            std::cerr << "Error: Self-loops not allowed in multigraph\n";
-            return;
-        }
-        addVertex(u);
-        addVertex(v);
-        adjacencyList[u].push_back(v);
-        adjacencyList[v].push_back(u); // Undirected multigraph
-    }
-    
-    /**
-     * @brief Execute DFS traversal on the entire graph (handles disconnected components).
-     */
-    void executeDepthFirstSearch() {
-        initializeVertices();
-        globalTime = 0;
-        
-        // Visit all vertices in sorted order for deterministic output
-        std::vector<std::string> sortedLabels;
-        for (const auto& pair : vertices) {
-            sortedLabels.push_back(pair.first);
-        }
-        std::sort(sortedLabels.begin(), sortedLabels.end());
-        
-        for (const std::string& label : sortedLabels) {
-            if (vertices[label].color == Color::WHITE) {
-                dfsVisitRecursive(label);
-            }
-        }
-    }
-    
-    /**
-     * @brief Execute iterative DFS traversal on the entire graph.
-     */
-    void executeDepthFirstSearchIterative() {
-        initializeVertices();
-        globalTime = 0;
-        
-        std::vector<std::string> sortedLabels;
-        for (const auto& pair : vertices) {
-            sortedLabels.push_back(pair.first);
-        }
-        std::sort(sortedLabels.begin(), sortedLabels.end());
-        
-        for (const std::string& label : sortedLabels) {
-            if (vertices[label].color == Color::WHITE) {
-                dfsVisitIterative(label);
-            }
-        }
-    }
-    
-    /**
-     * @brief Print DFS results in tabular format.
-     */
-    void printDFSResult() const {
-        std::vector<std::string> sortedLabels;
-        for (const auto& pair : vertices) {
-            sortedLabels.push_back(pair.first);
-        }
-        std::sort(sortedLabels.begin(), sortedLabels.end());
-        
-        std::cout << "Vertex | d  | f  | Parent\n";
-        std::cout << "-------|----|----|--------\n";
-        
-        for (const std::string& label : sortedLabels) {
-            const Vertex& vertex = vertices.at(label);
-            std::cout << label << "\t | " << vertex.discoveryTime << " | " << vertex.finishTime << " | ";
-            
-            if (vertex.parent.empty()) {
-                std::cout << "NIL";
-            } else {
-                std::cout << vertex.parent;
-            }
-            
-            std::cout << std::endl;
-        }
-    }
-    
-    /**
-     * @brief Print graph statistics.
-     */
-    void printGraphInfo() const {
-        int vertexCount = static_cast<int>(vertices.size());
-        int edgeCount = 0;
-        for (const auto& pair : adjacencyList) {
-            edgeCount += static_cast<int>(pair.second.size());
-        }
-        edgeCount /= 2; // Each undirected edge is counted twice
-        
-        std::cout << "Multigraph Info: " << vertexCount << " vertices, " << edgeCount << " edges (including parallel edges)\n";
-    }
-
+class MultiGraph {
 private:
-    /**
-     * @brief Initialize all vertices for DFS.
-     */
-    void initializeVertices() {
-        for (auto& pair : vertices) {
-            Vertex& vertex = pair.second;
-            vertex.color = Color::WHITE;
-            vertex.discoveryTime = -1;
-            vertex.finishTime = -1;
-            vertex.parent = "";
-        }
-    }
+    vector<vector<int>> adjacencyList;
+    int numberOfVertices;
+    vector<bool> visitedVertices;
+    vector<int> traversalOrder;
     
     /**
-     * @brief Recursive DFS visit implementation.
-     * @param currentLabel Current vertex label
+     * @brief Performs recursive DFS from given vertex
+     * @param currentVertex Starting vertex for DFS
      */
-    void dfsVisitRecursive(const std::string& currentLabel) {
-        Vertex& current = vertices[currentLabel];
-        globalTime++;
-        current.discoveryTime = globalTime;
-        current.color = Color::GRAY;
-        
-        // Visit neighbors in sorted order for deterministic output
-        std::vector<std::string> neighbors = adjacencyList[currentLabel];
-        std::sort(neighbors.begin(), neighbors.end());
-        
-        for (const std::string& neighborLabel : neighbors) {
-            Vertex& neighbor = vertices[neighborLabel];
-            if (neighbor.color == Color::WHITE) {
-                neighbor.parent = currentLabel;
-                dfsVisitRecursive(neighborLabel);
+    void performRecursiveDFS(int currentVertex) {
+        visitedVertices[currentVertex] = true;
+        traversalOrder.push_back(currentVertex);
+        for (int neighbor : adjacencyList[currentVertex]) {
+            if (!visitedVertices[neighbor]) {
+                performRecursiveDFS(neighbor);
             }
         }
-        
-        current.color = Color::BLACK;
-        globalTime++;
-        current.finishTime = globalTime;
     }
     
     /**
-     * @brief Iterative DFS visit implementation using explicit stack.
-     * @param startLabel Starting vertex label
+     * @brief Resets visited status for all vertices
      */
-    void dfsVisitIterative(const std::string& startLabel) {
-        std::stack<std::pair<std::string, bool>> stack; // (vertex, isFinishing)
-        stack.push({startLabel, false});
+    void resetVisitedStatus() {
+        fill(visitedVertices.begin(), visitedVertices.end(), false);
+        traversalOrder.clear();
+    }
+    
+    /**
+     * @brief Validates that vertices are within valid range
+     * @param vertex Vertex to validate
+     * @return True if vertex is valid
+     */
+    bool isValidVertex(int vertex) const {
+        return vertex >= 0 && vertex < numberOfVertices;
+    }
+
+public:
+    /**
+     * @brief Constructs a multi graph with specified number of vertices
+     * @param vertexCount Number of vertices in the graph
+     */
+    explicit MultiGraph(int vertexCount) : numberOfVertices(vertexCount) {
+        adjacencyList.resize(vertexCount);
+        visitedVertices.resize(vertexCount, false);
+    }
+    
+    /**
+     * @brief Adds an edge to the multi graph with validation
+     * @param sourceVertex Source vertex of the edge
+     * @param targetVertex Target vertex of the edge
+     * @return True if edge was added successfully
+     */
+    bool addEdge(int sourceVertex, int targetVertex) {
+        if (!isValidVertex(sourceVertex) || !isValidVertex(targetVertex)) {
+            cerr << "Warning: Invalid vertex index (" << sourceVertex 
+                 << ", " << targetVertex << "). Vertices must be in range [0, " 
+                 << numberOfVertices - 1 << "]\n";
+            return false;
+        }
         
-        while (!stack.empty()) {
-            std::pair<std::string, bool> current = stack.top();
-            stack.pop();
-            
-            std::string currentLabel = current.first;
-            bool isFinishing = current.second;
-            
-            Vertex& currentVertex = vertices[currentLabel];
-            
-            if (isFinishing) {
-                currentVertex.color = Color::BLACK;
-                globalTime++;
-                currentVertex.finishTime = globalTime;
-            } else {
-                if (currentVertex.color == Color::WHITE) {
-                    globalTime++;
-                    currentVertex.discoveryTime = globalTime;
-                    currentVertex.color = Color::GRAY;
-                    
-                    // Push finish marker
-                    stack.push({currentLabel, true});
-                    
-                    // Visit neighbors in reverse sorted order (stack reverses order)
-                    std::vector<std::string> neighbors = adjacencyList[currentLabel];
-                    std::sort(neighbors.begin(), neighbors.end(), std::greater<std::string>());
-                    
-                    for (const std::string& neighborLabel : neighbors) {
-                        Vertex& neighbor = vertices[neighborLabel];
-                        if (neighbor.color == Color::WHITE) {
-                            neighbor.parent = currentLabel;
-                            stack.push({neighborLabel, false});
-                        }
+        if (sourceVertex == targetVertex) {
+            cerr << "Warning: Self-loop detected (" << sourceVertex 
+                 << " -> " << targetVertex << "). Multi graphs do not support self-loops. Edge ignored.\n";
+            return false;
+        }
+        
+        adjacencyList[sourceVertex].push_back(targetVertex);
+        adjacencyList[targetVertex].push_back(sourceVertex);
+        return true;
+    }
+    
+    /**
+     * @brief Executes DFS traversal using recursive approach
+     * @param startVertex Starting vertex for traversal
+     * @return Vector containing vertices in DFS order
+     */
+    vector<int> executeRecursiveDFS(int startVertex) {
+        if (!isValidVertex(startVertex)) {
+            cerr << "Error: Invalid starting vertex " << startVertex << "\n";
+            return vector<int>();
+        }
+        resetVisitedStatus();
+        performRecursiveDFS(startVertex);
+        return traversalOrder;
+    }
+    
+    /**
+     * @brief Executes DFS traversal using iterative approach with stack
+     * @param startVertex Starting vertex for traversal
+     * @return Vector containing vertices in DFS order
+     */
+    vector<int> executeIterativeDFS(int startVertex) {
+        if (!isValidVertex(startVertex)) {
+            cerr << "Error: Invalid starting vertex " << startVertex << "\n";
+            return vector<int>();
+        }
+        
+        resetVisitedStatus();
+        stack<int> dfsStack;
+        dfsStack.push(startVertex);
+        
+        while (!dfsStack.empty()) {
+            int currentVertex = dfsStack.top();
+            dfsStack.pop();
+            if (!visitedVertices[currentVertex]) {
+                visitedVertices[currentVertex] = true;
+                traversalOrder.push_back(currentVertex);
+                for (int i = static_cast<int>(adjacencyList[currentVertex].size()) - 1; i >= 0; --i) {
+                    int neighbor = adjacencyList[currentVertex][i];
+                    if (!visitedVertices[neighbor]) {
+                        dfsStack.push(neighbor);
                     }
                 }
             }
         }
+        return traversalOrder;
+    }
+    
+    /**
+     * @brief Gets the number of vertices in the graph
+     * @return Number of vertices
+     */
+    int getVertexCount() const {
+        return numberOfVertices;
+    }
+    
+    /**
+     * @brief Counts total number of edges including parallel edges
+     * @return Total edge count
+     */
+    int getTotalEdgeCount() const {
+        int totalEdges = 0;
+        for (const auto& neighbors : adjacencyList) {
+            totalEdges += static_cast<int>(neighbors.size());
+        }
+        return totalEdges / 2; // Each undirected edge counted twice
+    }
+    
+    /**
+     * @brief Displays the adjacency list representation with parallel edge indication
+     */
+    void displayGraph() const {
+        cout << "\nMulti Graph - Adjacency List Representation:\n";
+        cout << "Parallel edges are shown as repeated connections\n";
+        
+        for (int vertex = 0; vertex < numberOfVertices; ++vertex) {
+            cout << "Vertex " << vertex << ": ";
+            if (!adjacencyList[vertex].empty()) {
+                for (size_t i = 0; i < adjacencyList[vertex].size(); ++i) {
+                    if (i > 0) cout << " -> ";
+                    cout << adjacencyList[vertex][i];
+                }
+            }
+            cout << "\n";
+        }
+        
+        cout << "Total vertices: " << numberOfVertices << "\n";
+        cout << "Total edges (including parallel): " << getTotalEdgeCount() << "\n";
+    }
+    
+    /**
+     * @brief Displays parallel edge statistics
+     */
+    void displayParallelEdgeStatistics() const {
+        map<pair<int, int>, int> edgeCount;
+        
+        for (int vertex = 0; vertex < numberOfVertices; ++vertex) {
+            for (int neighbor : adjacencyList[vertex]) {
+                if (vertex < neighbor) { // Count each edge only once
+                    pair<int, int> edge = {vertex, neighbor};
+                    edgeCount[edge]++;
+                }
+            }
+        }
+        
+        cout << "\nParallel Edge Analysis:\n";
+        bool hasParallelEdges = false;
+        
+        for (const auto& edgePair : edgeCount) {
+            if (edgePair.second > 1) {
+                hasParallelEdges = true;
+                cout << "Edge (" << edgePair.first.first << ", " 
+                     << edgePair.first.second << ") appears " 
+                     << edgePair.second << " times\n";
+            }
+        }
+        
+        if (!hasParallelEdges) {
+            cout << "No parallel edges detected in this multi graph.\n";
+        }
     }
 };
 
 /**
- * @brief Read multigraph from input file.
- * @param filename Input file name
- * @return Constructed Multigraph
+ * @brief Handles input operations for multi graph construction
  */
-Multigraph readMultigraphFromFile(const std::string& filename) {
-    std::ifstream inputFile(filename);
-    if (!inputFile) {
-        std::cerr << "Error: Cannot open " << filename << std::endl;
-        exit(1);
+class MultiGraphInputHandler {
+private:
+    istream& inputStream;
+    
+public:
+    /**
+     * @brief Constructs input handler with specified stream
+     * @param stream Input stream to read from
+     */
+    explicit MultiGraphInputHandler(istream& stream) : inputStream(stream) {}
+    
+    /**
+     * @brief Reads graph data and constructs MultiGraph
+     * @return Constructed MultiGraph instance
+     */
+    unique_ptr<MultiGraph> readGraphData() {
+        int vertexCount, edgeCount;
+        inputStream >> vertexCount >> edgeCount;
+        
+        auto graph = make_unique<MultiGraph>(vertexCount);
+        int successfulEdges = 0;
+        
+        for (int edgeIndex = 0; edgeIndex < edgeCount; ++edgeIndex) {
+            int sourceVertex, targetVertex;
+            inputStream >> sourceVertex >> targetVertex;
+            if (graph->addEdge(sourceVertex, targetVertex)) {
+                successfulEdges++;
+            }
+        }
+        
+        cout << "Successfully added " << successfulEdges 
+             << " out of " << edgeCount << " edges.\n";
+        
+        return graph;
     }
     
-    int vertexCount, edgeCount;
-    inputFile >> vertexCount >> edgeCount;
-    
-    Multigraph graph;
-    
-    for (int i = 0; i < edgeCount; ++i) {
-        std::string u, v;
-        inputFile >> u >> v;
-        graph.addEdge(u, v);
+    /**
+     * @brief Reads starting vertex for DFS traversal
+     * @return Starting vertex index
+     */
+    int readStartingVertex() {
+        int startVertex;
+        inputStream >> startVertex;
+        return startVertex;
     }
-    
-    return graph;
-}
+};
 
+/**
+ * @brief Handles output operations for DFS results
+ */
+class MultiGraphOutputHandler {
+private:
+    ostream& outputStream;
+    
+public:
+    /**
+     * @brief Constructs output handler with specified stream
+     * @param stream Output stream to write to
+     */
+    explicit MultiGraphOutputHandler(ostream& stream) : outputStream(stream) {}
+    
+    /**
+     * @brief Displays DFS traversal results
+     * @param traversalResult Vector containing vertices in DFS order
+     * @param traversalType Description of traversal method
+     */
+    void displayTraversalResult(const vector<int>& traversalResult, const string& traversalType) {
+        if (traversalResult.empty()) {
+            outputStream << "DFS " << traversalType << ": No traversal performed (invalid input)\n";
+            return;
+        }
+        
+        outputStream << "DFS " << traversalType << ": ";
+        for (size_t i = 0; i < traversalResult.size(); ++i) {
+            if (i > 0) outputStream << " ";
+            outputStream << traversalResult[i];
+        }
+        outputStream << "\n";
+    }
+    
+    /**
+     * @brief Displays program header information
+     */
+    void displayProgramHeader() {
+        outputStream << "=== Depth-First Search for Multi Graph ===\n";
+        outputStream << "Supporting parallel edges, NO self-loops\n";
+    }
+};
+
+/**
+ * @brief Coordinates the Multi Graph DFS application workflow
+ */
+class MultiGraphDFSApplication {
+private:
+    unique_ptr<MultiGraph> graphInstance;
+    unique_ptr<MultiGraphInputHandler> inputHandler;
+    unique_ptr<MultiGraphOutputHandler> outputHandler;
+    
+public:
+    /**
+     * @brief Constructs DFS application with I/O streams
+     * @param input Input stream for reading data
+     * @param output Output stream for displaying results
+     */
+    MultiGraphDFSApplication(istream& input, ostream& output) {
+        inputHandler = make_unique<MultiGraphInputHandler>(input);
+        outputHandler = make_unique<MultiGraphOutputHandler>(output);
+    }
+    
+    /**
+     * @brief Executes the complete Multi Graph DFS application workflow
+     */
+    void executeApplication() {
+        outputHandler->displayProgramHeader();
+        graphInstance = inputHandler->readGraphData();
+        int startingVertex = inputHandler->readStartingVertex();
+        performDFSAnalysis(startingVertex);
+    }
+
+private:
+    /**
+     * @brief Performs DFS analysis using both recursive and iterative methods
+     * @param startVertex Starting vertex for analysis
+     */
+    void performDFSAnalysis(int startVertex) {
+        graphInstance->displayGraph();
+        graphInstance->displayParallelEdgeStatistics();
+        
+        vector<int> recursiveResult = graphInstance->executeRecursiveDFS(startVertex);
+        outputHandler->displayTraversalResult(recursiveResult, "using recursion");
+        
+        vector<int> iterativeResult = graphInstance->executeIterativeDFS(startVertex);
+        outputHandler->displayTraversalResult(iterativeResult, "using iteration");
+    }
+};
+
+/**
+ * @brief Main program entry point
+ * @return Program exit status
+ */
 int main() {
-    Multigraph graph = readMultigraphFromFile("input.txt");
-    
-    graph.printGraphInfo();
-    std::cout << "\n--- Recursive DFS ---\n";
-    graph.executeDepthFirstSearch();
-    graph.printDFSResult();
-    
-    std::cout << "\n--- Iterative DFS ---\n";
-    graph.executeDepthFirstSearchIterative();
-    graph.printDFSResult();
-    
+    try {
+        ifstream inputFile("input.txt");
+        if (!inputFile.is_open()) {
+            cerr << "Error: Cannot open input.txt file\n";
+            return 1;
+        }
+        
+        MultiGraphDFSApplication application(inputFile, cout);
+        application.executeApplication();
+        
+        inputFile.close();
+    } catch (const exception& error) {
+        cerr << "Error occurred: " << error.what() << "\n";
+        return 1;
+    }
     return 0;
 }

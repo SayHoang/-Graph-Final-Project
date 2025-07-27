@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.7.22)  25 JUL 2025 16:36
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.7.22)  27 JUL 2025 22:37
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -665,14 +665,14 @@ File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
 * modes: 
-* h-part:(L,W,R)=(42.67912pt, 526.376pt, 28.45274pt)
+* h-part:(L,W,R)=(28.45274pt, 554.82877pt, 14.22636pt)
 * v-part:(T,H,B)=(71.13188pt, 702.78308pt, 71.13188pt)
 * \paperwidth=597.50787pt
 * \paperheight=845.04684pt
-* \textwidth=526.376pt
+* \textwidth=554.82877pt
 * \textheight=702.78308pt
-* \oddsidemargin=-29.59087pt
-* \evensidemargin=-29.59087pt
+* \oddsidemargin=-43.81725pt
+* \evensidemargin=-43.81725pt
 * \topmargin=-38.1381pt
 * \headheight=12.0pt
 * \headsep=25.0pt
@@ -700,14 +700,14 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 49.
  (C:\Users\sayho\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-
-[1
-
-{C:/Users/sayho/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
 LaTeX Font Info:    Trying to load font information for T5+cmtt on input line 83.
  (C:\Users\sayho\AppData\Local\Programs\MiKTeX\tex/latex/vntex\t5cmtt.fd
 File: t5cmtt.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
+
+[1
+
+{C:/Users/sayho/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -791,6 +791,11 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
 
 [9]
+Overfull \hbox (30.93387pt too wide) in paragraph at lines 467--468
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -800,21 +805,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
 
 [10]
-Overfull \hbox (16.89133pt too wide) in paragraph at lines 515--515
-[]\T5/cmtt/m/n/12 Warning: Multiple edges are not allowed in simple graph. Skipping duplicate edge (1, 2).[] 
- []
-
-
-Overfull \hbox (16.89133pt too wide) in paragraph at lines 515--515
-[]\T5/cmtt/m/n/12 Warning: Multiple edges are not allowed in simple graph. Skipping duplicate edge (3, 4).[] 
- []
-
-
-Overfull \hbox (16.89133pt too wide) in paragraph at lines 515--515
-[]\T5/cmtt/m/n/12 Warning: Multiple edges are not allowed in simple graph. Skipping duplicate edge (3, 4).[] 
- []
-
-
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -832,24 +822,413 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
 
-[12] (main.aux)
+[12]
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[13]
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[14]
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[15]
+Overfull \hbox (37.23239pt too wide) in paragraph at lines 743--744
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+Overfull \hbox (87.62057pt too wide) in paragraph at lines 748--749
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[16]
+Overfull \hbox (56.12796pt too wide) in paragraph at lines 757--758
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[17]
+Overfull \hbox (30.93387pt too wide) in paragraph at lines 834--835
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+Overfull \hbox (12.0383pt too wide) in paragraph at lines 841--842
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+Overfull \hbox (43.53091pt too wide) in paragraph at lines 847--848
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[18]
+Overfull \hbox (12.0383pt too wide) in paragraph at lines 854--855
+[][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+Overfull \hbox (5.73978pt too wide) in paragraph at lines 864--865
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[19]
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[20]
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[21]
+Overfull \hbox (68.69397pt too wide) in paragraph at lines 1042--1042
+[]\T5/cmtt/m/n/12 Warning: Parallel edge detected (0 <-> 1). Simple graphs do not support parallel edges. Edge ignored.[] 
+ []
+
+
+Overfull \hbox (13.13254pt too wide) in paragraph at lines 1042--1042
+[]\T5/cmtt/m/n/12 Warning: Self-loop detected (5 -> 5). Simple graphs do not support self-loops. Edge ignored.[] 
+ []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[22]
+Overfull \hbox (6.95905pt too wide) in paragraph at lines 1076--1076
+[]\T5/cmtt/m/n/12 Warning: Self-loop detected (5 -> 5). Multi graphs do not support self-loops. Edge ignored.[] 
+ []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[23]
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[24]
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[25]
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[26]
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[27]
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[28]
+Overfull \hbox (37.23239pt too wide) in paragraph at lines 1322--1323
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+Overfull \hbox (87.62057pt too wide) in paragraph at lines 1327--1328
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+Overfull \hbox (56.12796pt too wide) in paragraph at lines 1336--1337
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[29]
+Overfull \hbox (12.0383pt too wide) in paragraph at lines 1389--1390
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+Overfull \hbox (62.42648pt too wide) in paragraph at lines 1390--1391
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[30]
+Overfull \hbox (30.93387pt too wide) in paragraph at lines 1407--1408
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+Overfull \hbox (12.0383pt too wide) in paragraph at lines 1414--1415
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+Overfull \hbox (43.53091pt too wide) in paragraph at lines 1420--1421
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+Overfull \hbox (30.93387pt too wide) in paragraph at lines 1427--1428
+[][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+Overfull \hbox (5.73978pt too wide) in paragraph at lines 1437--1438
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[31]
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[32]
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[33]
+Overfull \hbox (68.69397pt too wide) in paragraph at lines 1569--1569
+[]\T5/cmtt/m/n/12 Warning: Parallel edge detected (1 <-> 3). Simple graphs do not support parallel edges. Edge ignored.[] 
+ []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[34]
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[35]
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[36]
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[37]
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[38]
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[39]
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[40]
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[41]
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[42]
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.93912pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.93912pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.93912pt}.
+
+[43] (main.aux)
  ***********
 LaTeX2e <2025-06-01> patch level 1
 L3 programming layer <2025-07-11>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 18645 strings out of 468149
- 349774 string characters out of 5431082
- 970858 words of memory out of 5000000
- 46930 multiletter control sequences out of 15000+600000
- 646849 words of font info for 85 fonts, out of 8000000 for 9000
+ 18809 strings out of 468149
+ 352335 string characters out of 5431082
+ 977882 words of memory out of 5000000
+ 47090 multiletter control sequences out of 15000+600000
+ 648816 words of font info for 90 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,12n,91p,445b,1998s stack positions out of 10000i,1000n,20000p,200000b,200000s
- <C:\Users\sayho\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk><C:/Users/sayho/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/sayho/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/sayho/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/sayho/AppData/Local/Programs/MiKTeX/fonts/type1/vntex/vnr/vnbx12.pfb><C:/Users/sayho/AppData/Local/Programs/MiKTeX/fonts/type1/vntex/vnr/vnitt10.pfb><C:/Users/sayho/AppData/Local/Programs/MiKTeX/fonts/type1/vntex/vnr/vnr12.pfb><C:/Users/sayho/AppData/Local/Programs/MiKTeX/fonts/type1/vntex/vnr/vntt10.pfb><C:/Users/sayho/AppData/Local/Programs/MiKTeX/fonts/type1/vntex/vnr/vntt12.pfb>
-Output written on main.pdf (12 pages, 155374 bytes).
+ <C:\Users\sayho\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcbx1200.pk> <C:\Users\sayho\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk><C:/Users/sayho/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/sayho/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/sayho/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/sayho/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/sayho/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/sayho/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/sayho/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/sayho/AppData/Local/Programs/MiKTeX/fonts/type1/vntex/vnr/vnbx10.pfb><C:/Users/sayho/AppData/Local/Programs/MiKTeX/fonts/type1/vntex/vnr/vnbx12.pfb><C:/Users/sayho/AppData/Local/Programs/MiKTeX/fonts/type1/vntex/vnr/vnitt10.pfb><C:/Users/sayho/AppData/Local/Programs/MiKTeX/fonts/type1/vntex/vnr/vnr10.pfb><C:/Users/sayho/AppData/Local/Programs/MiKTeX/fonts/type1/vntex/vnr/vnr12.pfb><C:/Users/sayho/AppData/Local/Programs/MiKTeX/fonts/type1/vntex/vnr/vntt10.pfb><C:/Users/sayho/AppData/Local/Programs/MiKTeX/fonts/type1/vntex/vnr/vntt12.pfb>
+Output written on main.pdf (43 pages, 316399 bytes).
 PDF statistics:
- 89 PDF objects out of 1000 (max. 8388607)
+ 225 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  13 words of extra memory for PDF output out of 10000 (max. 10000000)
 
