@@ -1,88 +1,232 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <unordered_map>
-#include <tuple>
+#include <map>
+#include <algorithm>
+#include <functional>
 
-namespace core {
+namespace SelfConjugatePartitions {
+    
     /**
-     * @brief Recursive helper for p_k^{selfcjg}(n) with memoization.
-     *        Counts the number of self-conjugate partitions of n with exactly k parts.
-     *        A self-conjugate partition with k parts must have largest part k, and be symmetric.
-     *        The Ferrers diagram is symmetric, so the partition is determined by the number of odd-length hooks.
-     *        The construction: For k odd, the middle row is odd, for k even, all rows are paired.
-     *        The recurrence: p_k^{selfcjg}(n) = p_{k-2}^{selfcjg}(n-2k+1) + p_{k-1}^{selfcjg}(n-k)
-     *        (see e.g. Andrews, The Theory of Partitions, Theorem 2.7.1)
-     *
-     * @param n The integer to partition
-     * @param k The number of parts
-     * @param memo Memoization table
-     * @return The number of self-conjugate partitions of n with k parts
+     * @brief Check if a partition is self-conjugate (equals its transpose)
+     * @param partitionParts Vector of partition parts in non-increasing order
+     * @return True if partition is self-conjugate, false otherwise
      */
-    int countSelfConjugatePartitionsRecursive(int n, int k, std::vector<std::vector<int>>& memo) {
-        if (k < 0 || n < 0) return 0;
-        if (k == 0 && n == 0) return 1;
-        if (k == 0 || n == 0) return 0;
-        if (memo[n][k] != -1) return memo[n][k];
-        int result = 0;
-        // Case 1: Remove the outermost "hook" (length 2k-1), reduces n by 2k-1, k by 2
-        if (n - (2 * k - 1) >= 0 && k >= 2) {
-            result += countSelfConjugatePartitionsRecursive(n - (2 * k - 1), k - 2, memo);
+    bool validateSelfConjugateProperty(const std::vector<int>& partitionParts) {
+        int numberOfParts = static_cast<int>(partitionParts.size());
+        std::vector<int> conjugateForm;
+        int maximumPart = 0;
+        
+        for (int currentPart : partitionParts) {
+            maximumPart = std::max(maximumPart, currentPart);
         }
-        // Case 2: Remove the central row (length k), reduces n by k, k by 1
-        if (n - k >= 0 && k >= 1) {
-            result += countSelfConjugatePartitionsRecursive(n - k, k - 1, memo);
-        }
-        memo[n][k] = result;
-        return result;
-    }
-    /**
-     * @brief Dynamic programming for p_k^{selfcjg}(n)
-     * @param n The integer to partition
-     * @param k The number of parts
-     * @return The number of self-conjugate partitions of n with k parts
-     */
-    int countSelfConjugatePartitionsDP(int n, int k) {
-        std::vector<std::vector<int>> dp(n + 1, std::vector<int>(k + 1, 0));
-        dp[0][0] = 1;
-        for (int total = 1; total <= n; ++total) {
-            for (int parts = 1; parts <= k; ++parts) {
-                // Case 1: Remove the outermost hook (length 2*parts-1)
-                if (total - (2 * parts - 1) >= 0 && parts >= 2) {
-                    dp[total][parts] += dp[total - (2 * parts - 1)][parts - 2];
-                }
-                // Case 2: Remove the central row (length parts)
-                if (total - parts >= 0 && parts >= 1) {
-                    dp[total][parts] += dp[total - parts][parts - 1];
+        
+        for (int rowIndex = 1; rowIndex <= maximumPart; ++rowIndex) {
+            int columnCount = 0;
+            for (int partValue : partitionParts) {
+                if (partValue >= rowIndex) {
+                    ++columnCount;
+                } else {
+                    break;
                 }
             }
+            conjugateForm.push_back(columnCount);
         }
-        return dp[n][k];
+        
+        if (static_cast<int>(conjugateForm.size()) != numberOfParts) {
+            return false;
+        }
+        
+        for (int index = 0; index < numberOfParts; ++index) {
+            if (partitionParts[index] != conjugateForm[index]) {
+                return false;
+            }
+        }
+        
+        return true;
     }
-} // namespace core
+    
+    /**
+     * @brief Recursive approach with memoization for counting self-conjugate partitions
+     * @param targetNumber Number to partition
+     * @param exactParts Exact number of parts required
+     * @param memoizationTable Table for storing computed results
+     * @return Number of self-conjugate partitions of targetNumber with exactParts parts
+     */
+    int calculateRecursiveWithMemoization(int targetNumber, 
+                                         int exactParts, 
+                                         std::map<std::pair<int, int>, int>& memoizationTable) {
+        if (targetNumber == 0 && exactParts == 0) {
+            return 1;
+        }
+        if (targetNumber < 0 || exactParts <= 0) {
+            return 0;
+        }
+        if (exactParts > targetNumber) {
+            return 0;
+        }
+        
+        std::pair<int, int> memoKey = {targetNumber, exactParts};
+        if (memoizationTable.count(memoKey)) {
+            return memoizationTable[memoKey];
+        }
+        
+        int validPartitionsCount = 0;
+        std::vector<int> currentPartition;
+        
+        std::function<void(int, int, int)> generatePartitions = 
+            [&](int remainingSum, int remainingParts, int maximumValue) {
+                if (remainingParts == 0 && remainingSum == 0) {
+                    std::vector<int> temporaryPartition = currentPartition;
+                    std::sort(temporaryPartition.rbegin(), temporaryPartition.rend());
+                    
+                    if (static_cast<int>(temporaryPartition.size()) == exactParts && 
+                        validateSelfConjugateProperty(temporaryPartition)) {
+                        ++validPartitionsCount;
+                    }
+                    return;
+                }
+                
+                if (remainingParts <= 0 || remainingSum <= 0) {
+                    return;
+                }
+                
+                for (int candidateValue = std::min(maximumValue, remainingSum); candidateValue >= 1; --candidateValue) {
+                    currentPartition.push_back(candidateValue);
+                    generatePartitions(remainingSum - candidateValue, remainingParts - 1, candidateValue);
+                    currentPartition.pop_back();
+                }
+            };
+        
+        generatePartitions(targetNumber, exactParts, targetNumber);
+        return memoizationTable[memoKey] = validPartitionsCount;
+    }
+    
+    /**
+     * @brief Dynamic programming approach for counting self-conjugate partitions
+     * @param targetNumber Number to partition
+     * @param exactParts Exact number of parts required
+     * @return Number of self-conjugate partitions of targetNumber with exactParts parts
+     */
+    int calculateDynamicProgramming(int targetNumber, int exactParts) {
+        if (targetNumber == 0 && exactParts == 0) {
+            return 1;
+        }
+        if (targetNumber < 0 || exactParts <= 0) {
+            return 0;
+        }
+        if (exactParts > targetNumber) {
+            return 0;
+        }
+        
+        std::vector<std::vector<int>> dpTable(targetNumber + 1, std::vector<int>(exactParts + 1, 0));
+        dpTable[0][0] = 1;
+        
+        for (int currentSum = 1; currentSum <= targetNumber; ++currentSum) {
+            for (int currentParts = 1; currentParts <= std::min(currentSum, exactParts); ++currentParts) {
+                int validCount = 0;
+                std::vector<int> workingPartition;
+                
+                std::function<void(int, int, int)> generateValidPartitions = 
+                    [&](int remainingSum, int remainingPartsCount, int maximumAllowed) {
+                        if (remainingPartsCount == 0 && remainingSum == 0) {
+                            std::vector<int> partitionCopy = workingPartition;
+                            std::sort(partitionCopy.rbegin(), partitionCopy.rend());
+                            
+                            if (static_cast<int>(partitionCopy.size()) == currentParts && 
+                                validateSelfConjugateProperty(partitionCopy)) {
+                                ++validCount;
+                            }
+                            return;
+                        }
+                        
+                        if (remainingPartsCount <= 0 || remainingSum <= 0) {
+                            return;
+                        }
+                        
+                        for (int nextValue = std::min(maximumAllowed, remainingSum); nextValue >= 1; --nextValue) {
+                            workingPartition.push_back(nextValue);
+                            generateValidPartitions(remainingSum - nextValue, remainingPartsCount - 1, nextValue);
+                            workingPartition.pop_back();
+                        }
+                    };
+                
+                generateValidPartitions(currentSum, currentParts, currentSum);
+                dpTable[currentSum][currentParts] = validCount;
+            }
+        }
+        
+        return dpTable[targetNumber][exactParts];
+    }
+    
+    /**
+     * @brief Read input parameters from file
+     * @param fileName Input file name
+     * @return Pair of (n, k) values
+     */
+    std::pair<int, int> loadParametersFromFile(const std::string& fileName) {
+        std::ifstream inputFile(fileName);
+        if (!inputFile.is_open()) {
+            std::cerr << "Error: Cannot open file " << fileName << std::endl;
+            exit(1);
+        }
+        
+        int targetNumber, exactParts;
+        inputFile >> targetNumber >> exactParts;
+        inputFile.close();
+        
+        return {targetNumber, exactParts};
+    }
+    
+    /**
+     * @brief Display computation results with formatted output
+     * @param targetNumber The number being partitioned
+     * @param exactParts The exact number of parts required
+     * @param recursiveResult Result from recursive approach
+     * @param dpResult Result from dynamic programming approach
+     */
+    void presentComputationResults(int targetNumber, 
+                                  int exactParts, 
+                                  int recursiveResult, 
+                                  int dpResult) {
+        std::cout << "Self-conjugate partitions of " << targetNumber 
+                  << " with " << exactParts << " parts (Recursive): " << recursiveResult << std::endl;
+        std::cout << "Self-conjugate partitions of " << targetNumber 
+                  << " with " << exactParts << " parts (Dynamic Programming): " << dpResult << std::endl;
+    }
+    
+} // namespace SelfConjugatePartitions
 
+/**
+ * @brief Main program entry point
+ * @return Program exit status
+ */
 int main() {
-    int n = 0, k = 0;
-    std::ifstream fin("input.txt");
-    if (!fin) {
-        std::cerr << "Error: Cannot open input.txt\n";
-        return 1;
-    }
-    fin >> n >> k;
-    fin.close();
-    if (n < 0 || k < 0) {
-        std::cout << "n and k must be non-negative integers.\n";
-        return 0;
-    }
-    std::vector<std::vector<int>> memo(n + 1, std::vector<int>(k + 1, -1));
-    int recursiveResult = core::countSelfConjugatePartitionsRecursive(n, k, memo);
-    int dpResult = core::countSelfConjugatePartitionsDP(n, k);
-    std::cout << "Number of self-conjugate partitions of " << n << " with exactly " << k << " parts (recursive): " << recursiveResult << std::endl;
-    std::cout << "Number of self-conjugate partitions of " << n << " with exactly " << k << " parts (DP): " << dpResult << std::endl;
-    if (recursiveResult == dpResult) {
-        std::cout << "Results are equal." << std::endl;
-    } else {
-        std::cout << "Results are different!" << std::endl;
-    }
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    std::cout.tie(nullptr);
+    
+    const std::string INPUT_FILE_NAME = "input.txt";
+    
+    std::pair<int, int> parameters = SelfConjugatePartitions::loadParametersFromFile(INPUT_FILE_NAME);
+    int targetNumber = parameters.first;
+    int exactParts = parameters.second;
+    
+    // Clear memoization and compute using recursive approach
+    std::map<std::pair<int, int>, int> memoizationCache;
+    int recursiveResult = SelfConjugatePartitions::calculateRecursiveWithMemoization(
+        targetNumber, exactParts, memoizationCache
+    );
+    
+    // Compute using dynamic programming approach
+    int dynamicProgrammingResult = SelfConjugatePartitions::calculateDynamicProgramming(
+        targetNumber, exactParts
+    );
+    
+    // Display results
+    SelfConjugatePartitions::presentComputationResults(
+        targetNumber, exactParts, recursiveResult, dynamicProgrammingResult
+    );
+    
     return 0;
 } 
